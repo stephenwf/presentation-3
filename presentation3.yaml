@@ -1,0 +1,488 @@
+id: "http://www.digirati.com/ns/capture-model-schema/0.1#"
+$schema: "http://json-schema.org/draft-06/schema#"
+type: object
+description: |
+  The overall description of the structure and properties of the digital representation
+  of an object. It carries information needed for the viewer to present the digitized
+  content to the user, such as a title and other descriptive information about the object
+  or the intellectual work that it conveys. Each Manifest describes how to present a single
+  object such as a book, a photograph, or a statue.
+properties:
+  context:
+    type: array
+    items:
+      type: string
+      format: uri
+  id: { $ref: '#/definitions/id' }
+  type:
+    type: string
+    enum:
+      - Manifest
+  label: { $ref: '#/definitions/label' }
+  metadata: { $ref: '#/definitions/metadata' }
+  summary: { $ref: '#/definitions/summary' }
+  thumbnail: { $ref: '#/definitions/thumbnail' }
+  viewingDirection: { $ref: '#/definitions/viewingDirection' }
+  behavior: { $ref: '#/definitions/behavior' }
+  navDate: { $ref: '#/definitions/navDate' }
+  rights: { $ref: '#/definitions/rights' }
+  attribution: { $ref: '#/definitions/attribution' }
+  logo: { $ref: '#/definitions/logo' }
+  related: { $ref: '#/definitions/related' }
+  service: { $ref: '#/definitions/service' }
+  seeAlso: { $ref: '#/definitions/seeAlso' }
+  rendering: { $ref: '#/definitions/rendering' }
+  within: { $ref: '#/definitions/within' }
+  startCanvas: { $ref: '#/definitions/startCanvas' }
+  items:
+    type: array
+    items:
+      type: object
+      description: |
+        The order of the views of the object. Multiple Sequences are allowed to cover situations
+        when there are multiple equally valid orders through the content, such as when a manuscript’s
+        pages are rebound or archival collections are reordered.
+      properties:
+        id: { $ref: '#/definitions/id' }
+        type:
+          type: string
+          enum:
+            - Sequence
+        label: { $ref: '#/definitions/label' }
+        viewingDirection: { $ref: '#/definitions/viewingDirection' }
+        behavior: { $ref: '#/definitions/behavior' }
+        startCanvas: { $ref: '#/definitions/startCanvas' }
+        items:
+          type: array
+          items:
+            type: object
+            description: |
+              A virtual container that represents a page or view and has content resources associated
+              with it or with parts of it. The Canvas provides a frame of reference for the layout of
+              the content. The concept of a Canvas is borrowed from standards like PDF and HTML, or
+              applications like Photoshop and Powerpoint, where the display starts from a blank display
+              and images, video, text and other resources are “painted” on to it.
+            properties:
+              id: { $ref: '#/definitions/id' }
+              type:
+                type: string
+                enum:
+                  - Canvas
+              label: { $ref: '#/definitions/label' }
+              height: { $ref: '#/definitions/height' }
+              width: { $ref: '#/definitions/width' }
+              duration: { $ref: '#/definitions/duration' }
+              items:
+                type: array
+                items: { $ref: '#/definitions/annotationPage'}
+              annotations:
+                type: array
+                items: { $ref: '#/definitions/annotationPage' }
+  structure:
+    type: array
+    items: { $ref: '#/definitions/range' }
+definitions:
+  # Collection, Manifest, Sequence, Canvas, content resource, Range, AnnotationCollection, AnnotationPage, Annotation
+  id:
+    type: string
+    description: |
+      The URI that identifies this resource. It is recommended that an HTTPS URI be used
+      for all resources. If this resource is only available embedded within another
+      resource, such as a Sequence within a Manifest, then the URI may be the URI of the
+      encapsulating resource with a unique fragment on the end. This is not true for
+      Canvases, which must have their own URI without a fragment.
+    format: uri
+    minLength: 1
+  mediaType:
+    type: string
+    description: |
+      The type or class of this resource. For types defined by this specification, the value of
+      type will be described in the sections below describing the individual classes.
+    enum:
+      - Application
+      - Dataset
+      - Image
+      - Sound
+      - Text
+      - Video
+  textualType:
+    type: string
+    enum:
+      - Text
+      - Dataset
+  # Collection, Manifest, Sequence, Canvas, content resource, Other resource
+  thumbnail:
+    type: array
+    description: |
+      An external content resource that represents this resource, such as a small
+      image or short audio clip.
+    minItems: 1
+    items:
+      type: object
+      properties:
+        id:
+          $ref: '#/definitions/id'
+        type:
+          type: string
+          enum:
+            - Image
+        format:
+          $ref: '#/definitions/id'
+  label:
+    type: string
+    description: |
+      A human readable label, name or title for this resource. The label property
+      is intended to be displayed as a short, textual surrogate for the resource if
+      a human needs to make a distinction between it and similar resources, for example
+      between objects, pages, or options for a choice of images to display.
+  metadata:
+    type: array
+    description: |
+      A list of descriptive entries to be displayed to the user when they interact with
+      this resource, given as pairs of human readable label and value entries. There are
+      no semantics conveyed by this information, only strings to present to the user when
+      interacting with this resource. A pair might be used to convey information about the
+      creation of the object, a physical description, ownership information, and many
+      other use cases.
+    items:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+  summary:
+    type: string
+    description: |
+      A short textual summary of this resource, intended to be conveyed to the user when the
+      metadata pairs for the resource are not being displayed. This could be used as a snippet
+      for item level search results, for limited screen real-estate environments, or as an
+      alternative user interface when the metadata fields are not rendered.
+  navDate:
+    type: string
+    description: |
+      A date that the client can use for navigation purposes when presenting this resource to
+      the user in a time-based user interface, such as a calendar or timeline. The value must
+      be an xsd:dateTime literal in UTC, expressed in the form “YYYY-MM-DDThh:mm:ssZ”. If the
+      exact time is not known, then “00:00:00” should be used.
+    format: date-time
+  attribution:
+    description: |
+      Text that must be displayed when this resource is displayed or used. For example, the
+      attribution property could be used to present copyright or ownership statements, or
+      simply an acknowledgement of the owning and/or publishing institution.
+    type: string
+  rights:
+    type: object
+    description: |
+      A link to an external resource that describes the license or rights statement under which
+      this resource may be used. The rationale for the value being a URI and not a human readable
+      text is that typically there is one license for many resources, and the text is too long
+      to be displayed to the user at the same time as the object. If displaying the text directly
+      to the user is a requirement, then it is recommended to include the information using the
+      attribution property instead, or in metadata.
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      type:
+        $ref: '#/definitions/textualType'
+      format:
+        $ref: '#/definitions/id'
+        enum:
+          - text/html
+          - text/plain
+  logo:
+    type: object
+    description: |
+      A small external image resource that represents an individual or organization associated with
+      this resource. This could be the logo of the owning or hosting institution. The logo must be
+      clearly rendered when the resource is displayed or used, without cropping, rotating or otherwise
+      distorting the image. It is recommended that a IIIF Image API service be available for this
+      image for other manipulations such as resizing.
+    properties:
+      id:
+        $ref: '#/definitions/id'
+  # related, rendering, rights, and within
+  language:
+    type: array
+    description: |
+      The language or languages used in the content of this external resource. This property is already
+      available from the Web Annotation model for content resources that are the body or target of an
+      Annotation, however it may also be used for resources referenced from related, rendering, rights,
+      and within.
+    minItems: 1
+    items:
+      type: string
+  profile:
+    type: string
+    description: |
+      A schema or named set of functionality available from this resource. The profile can further
+      clarify the type and/or format of an external resource or service, allowing clients to customize
+      their handling of this resource.
+  # Canvas, Content resources
+  height:
+    type: integer
+    description: |
+      The height of this Canvas or external content resource. For content resources, the value is in
+      pixels. For Canvases, the value does not have a unit. In combination with the width, it conveys
+      an aspect ratio for the space in which content resources are located.
+  # Canvas, Content resources
+  width:
+    type: integer
+    description: |
+      The width of this Canvas or external content resource. For content resources, the value is in pixels.
+      For Canvases, the value does not have a unit. In combination with the height, it conveys an aspect
+      ratio for the space in which content resources are located.
+
+  # Canvas, Content resources,
+  duration:
+    type: number
+    description: |
+      The duration of this Canvas or external content resource, given in seconds.
+  format:
+    type: string
+    description: |
+      The specific media type (often called a MIME type) for this content resource, for example
+      “image/jpeg”. This is important for distinguishing different formats of the same overall
+      type of resource, such as distinguishing text in XML from plain text.
+    pattern: '\w+/[-+.\w]+'
+  # Collection, Manifest, Sequence, Range, Other resources
+  viewingDirection:
+    type: string
+    enum:
+      - left-to-right
+      - right-to-left
+      - top-to-bottom
+      - bottom-to-top
+  behavior:
+    type: array
+    items:
+      type: string
+      enum:
+        - individuals
+        - paged
+        - continuous
+        - multi-part
+        - non-paged
+        - facing-pages
+        - none
+        - no-nav
+        - thumbnail-nav
+        - auto-advance
+        - together
+# @todo this is not supprted in UI yet.
+#      oneOf:
+#        -
+#          type: string
+#          enum:
+#            - individuals
+#            - paged
+#            - continuous
+#            - multi-part
+#            - non-paged
+#            - facing-pages
+#            - none
+#            - no-nav
+#            - thumbnail-nav
+#            - auto-advance
+#            - together
+#        -
+#          type: string
+#          format: uri
+  timeMode:
+    type: string
+    enum:
+      - trim
+      - scale
+      - loop
+# @todo this is not supported yet.
+#    oneOf:
+#      -
+#        type: string
+#        enum:
+#          - trim
+#          - scale
+#          - loop
+#      -
+#        type: string
+#        format: uri
+  related:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+      label: { $ref: '#/definitions/label' }
+      format: { $ref: '#/definitions/format' }
+  rendering:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+      label: { $ref: '#/definitions/label' }
+      format: { $ref: '#/definitions/format' }
+  service:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - Service
+      profile: { $ref: '#/definitions/profile' }
+  seeAlso:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+      label: { $ref: '#/definitions/label' }
+      format: { $ref: '#/definitions/format' }
+  within:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+      label: { $ref: '#/definitions/label' }
+  startCanvas:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - Canvas
+  includes:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+# @todo this is not supported yet.
+#    oneOf:
+#      -
+#        type: object
+#        properties:
+#          id: { $ref: '#/definitions/id' }
+#          type: { $ref: '#/definitions/mediaType' }
+#      -
+#        type: string
+#        format: uri
+  first:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+      label: { $ref: '#/definitions/label' }
+  last:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type: { $ref: '#/definitions/mediaType' }
+      label: { $ref: '#/definitions/label' }
+  total:
+    type: integer
+  next:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - Collection
+          - AnnotationPage
+  prev:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - Collection
+          - AnnotationPage
+  startIndex:
+    type: integer
+  annotationPage:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - AnnotationPage
+      items:
+        type: array
+        items: { $ref: '#/definitions/annotation' }
+      partOf:
+        type: object
+        properties:
+          type:
+            type: string
+            enum:
+              - AnnotationCollection
+          id: { $ref: '#/definitions/id' }
+          label: { $ref: '#/definitions/label' }
+          first: { $ref: '#/definitions/first' }
+          last: { $ref: '#/definitions/last' }
+          rights: { $ref: '#/definitions/rights' }
+          attribution: { $ref: '#/definitions/attribution' }
+          logo: { $ref: '#/definitions/logo' }
+  annotation:
+    type: object
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - Annotation
+      motivation:
+        type: string
+      body:
+        type: object
+        properties:
+          type: { $ref: '#/definitions/mediaType' }
+          value:
+            type: string
+          format: { $ref: '#/definitions/format' }
+          service: { $ref: '#/definitions/service' }
+          height: { $ref: '#/definitions/height' }
+          width: { $ref: '#/definitions/width' }
+      target: # @todo change.
+        type: object
+        properties:
+          id: { $ref: '#/definitions/id' }
+          type: { $ref: '#/definitions/mediaType' }
+  range:
+    type: object
+    description: |
+      An ordered list of Canvases, and/or further Ranges. Ranges allow Canvases, or parts thereof,
+      to be grouped together in some way. This could be for textual reasons, such as to distinguish
+      books, chapters, verses, sections, non-content-bearing pages, the table of contents or
+      similar. Equally, physical features might be important such as quires or gatherings, sections
+      that have been added later and so forth.
+    properties:
+      id: { $ref: '#/definitions/id' }
+      type:
+        type: string
+        enum:
+          - Range
+      label: { $ref: '#/definitions/label' }
+      includes: { $ref: '#/definitions/includes' }
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            id: { $ref: '#/definitions/id' }
+            type:
+              type: string
+              enum:
+                - Canvas
+# @todo this is not supported yet.
+#           oneOf:
+#            - { $ref: '#/definitions/range' }
+#            -
+#              type: object
+#              properties:
+#                id: { $ref: '#/definitions/id' }
+#                type:
+#                  type: string
+#                  enum:
+#                    - Canvas
