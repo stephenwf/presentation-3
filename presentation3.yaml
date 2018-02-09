@@ -1,4 +1,4 @@
-id: "http://www.digirati.com/ns/capture-model-schema/0.1#"
+id: "http://www.digirati.com/ns/iiif-presentation-3/0.1#"
 $schema: "http://json-schema.org/draft-06/schema#"
 type: object
 description: |
