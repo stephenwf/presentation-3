@@ -12,7 +12,13 @@
     "test:watch": "nwb test-react --server",
     "precommit": "lint-staged"
   },
+  "files": ["bin", "validate.js"],
+  "bin": {
+    "validate-p3": "./bin/validate-p3"
+  },
   "dependencies": {
+    "ajv": "^6.1.1",
+    "chalk": "^2.3.1",
     "json-schema-ref-parser": "^4.1.0",
     "jsonld": "^0.5.18",
     "react": "^16.2.0",
@@ -21,7 +27,8 @@
     "tcomb-form": "^0.9.19",
     "tcomb-json-schema": "^0.3.2",
     "yaml-loader": "^0.5.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "@types/prop-types": "^15.5.2",
