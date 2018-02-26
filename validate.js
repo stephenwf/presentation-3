@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+const fs = require("fs");
 const path = require("path");
 const Ajv = require("ajv");
 const YAML = require("yamljs");
@@ -34,12 +36,19 @@ function validate(data) {
 }
 
 if (argv.path) {
-  validate(require(require.resolve(argv.path)));
+  try {
+    validate(require(path.resolve(path.join(process.cwd(), argv.path))));
+  } catch (e) {
+    validate(JSON.parse(fs.readFileSync(path.resolve(argv.path))));
+  }
 }
 
 if (argv.url) {
-  (async function() {
-    const data = await fetch(argv.url, argv.url);
-    validate(data);
-  })();
+  fetch(argv.url)
+    .then(function(resp) {
+      return resp.json();
+    })
+    .then(function(data) {
+      validate(data);
+    });
 }

@@ -1,8 +1,7 @@
 {
   "name": "presentation-3",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Describe presentation-3 here",
-  "private": true,
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
@@ -21,6 +20,7 @@
     "chalk": "^2.3.1",
     "json-schema-ref-parser": "^4.1.0",
     "jsonld": "^0.5.18",
+    "node-fetch": "^2.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "tcomb": "^3.2.24",
